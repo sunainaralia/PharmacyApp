@@ -32,7 +32,6 @@ class RegistrationView(APIView):
 class LoginView(APIView):
 
     def post(self, request):
-        print(request)
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             email = serializer.data.get('email')
