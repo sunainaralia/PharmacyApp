@@ -49,9 +49,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    password = serializers.CharField(max_length=255,
+    password = serializers.CharField(max_length=250,
                                      style={'input_type': 'password'}, write_only=True)
-    password2 = serializers.CharField(max_length=255,
+    password2 = serializers.CharField(max_length=250,
                                       style={'input_type': 'password'}, write_only=True)
 
     class Meta:
@@ -61,7 +61,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         password = attrs.get('password')
         password2 = attrs.get('password2')
         user = self.context.get('user')
-        print(user)
         if password != password2:
             raise serializers.ValidationError(
                 'Password and Confirm Password does not match.')
@@ -78,12 +77,9 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         FRONTEND_URL = os.environ.get('FRONTEND_URL')
-        print(FRONTEND_URL, 'URLLLLLLLLLLLLLLLLLL')
         email = attrs.get('email')
-        print(email, 'MMMMMMMMMMMMMMMMMMMM')
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
-            print(user, 'uuuuuuuuuuuuuuuuuuuuu')
             uid = urlsafe_base64_encode(force_bytes(user.id))
             print()
             token = PasswordResetTokenGenerator().make_token(user)
@@ -96,6 +92,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
                 'body': body,
                 'to_email': user.email
             }
+            print(data)
             Util.send_email(data)
             return attrs
 
