@@ -62,7 +62,7 @@ class ProfileView(APIView):
 
 # CHANGE USER PASSWORD
 class ChangePasswordView(APIView):
-    # renderer_classes = [ErrorRenderer]
+    renderer_classes = [ErrorRenderer]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
@@ -77,11 +77,10 @@ class ChangePasswordView(APIView):
 
 # SEND MAIL FOR RESET PASSWORD
 class SendPasswordResetEmailView(APIView):
-    # renderer_classes = [ErrorRenderer]
+    renderer_classes = [ErrorRenderer]
 
     def post(self, request, format=None):
         serializer = SendPasswordResetEmailSerializer(data=request.data)
-        print(serializer, 'ssssssssssssssssssss')
         if serializer.is_valid(raise_exception=True):
             return Response({"message": "Password reset link send. Please check your email"}, status=status.HTTP_200_OK)
 

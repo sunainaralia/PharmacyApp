@@ -45,7 +45,7 @@ class LoginSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'user_name',)
+        fields = ('id', 'email', 'user_name')
 
 
 class ChangePasswordSerializer(serializers.Serializer):
@@ -81,7 +81,6 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
-            print()
             token = PasswordResetTokenGenerator().make_token(user)
             link = f'{FRONTEND_URL}/api/user/reset-password/'+uid+'/'+token
 
@@ -92,7 +91,6 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
                 'body': body,
                 'to_email': user.email
             }
-            print(data)
             Util.send_email(data)
             return attrs
 
