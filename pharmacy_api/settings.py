@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "v1.api.account",
+    "v1.api.medical_side",
 ]
 
 MIDDLEWARE = [
