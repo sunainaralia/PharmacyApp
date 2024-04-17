@@ -8,8 +8,9 @@ class UserModelAdmin(BaseUserAdmin):
     list_filter = ['is_admin',]
     fieldsets = [
         ['User Credentials', {'fields': ['email', 'password']}],
-        ['Personal Info', {'fields': ['user_name']}],
-        ['Permisions', {'fields': ['is_admin']}],
+        ['Personal Info', {'fields': ['user_name', 'is_blocked']}],
+        ['Permisions', {'fields': ['is_admin',
+                                   'is_staff', 'is_superuser', 'is_active']}],
     ]
     add_fieldsets = (
         (None, {

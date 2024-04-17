@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = "django-insecure-p7dszh$(6!y#)dx+xk6a6suj@i!#&j9wt^r)^-$mzs&x0+0mmg"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "v1.api.account",
-    "v1.api.medical_side",
 ]
 
 MIDDLEWARE = [
@@ -138,8 +137,8 @@ AUTH_USER_MODEL = 'account.User'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_HOST_USER = "sunenaralia@gmail.com"
+EMAIL_HOST_PASSWORD = "qvbu nhpa npum bppp"
 EMAIL_USE_TLS = True
 
 
