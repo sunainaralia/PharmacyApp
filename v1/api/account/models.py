@@ -71,3 +71,26 @@ class User(AbstractBaseUser):
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
         return self
+
+
+class Doctor(models.Model):
+    primary_id=models.ForeignKey(User,on_delete=models.CASCADE,related_name="patient_detail",primary_key=True)
+    full_name=models.CharField(max_length=100)
+    Mobile=models.IntegerField()
+    dob=models.DateField()
+    education=models.CharField(max_length=100)
+    designation=models.CharField(max_length=100)
+    state=models.CharField(max_length=100)
+    avatar=models.CharField(max_length=100)
+    status=models.CharField(default='active')
+    id_card = models.CharField(max_length=100)
+    gender=models.CharField(max_length=100)
+    religion=models.CharField(max_length=100)
+    country=models.CharField(max_length=100)
+    postal_code=models.CharField(max_length=100)
+    address=models.CharField(max_length=100)
+    department=models.CharField(max_length=100)
+    city=models.CharField(max_length=100)
+    marital_status=models.CharField(max_length=100)
+    biography=models.CharField(max_length=100)
+
