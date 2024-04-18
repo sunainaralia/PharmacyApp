@@ -9,6 +9,7 @@ import os
 import random
 
 
+# SERIALIZER FOR REGISTRATION OF USER
 class RegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type": "password"}, write_only=True)
 
@@ -40,6 +41,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+# SERAILIZER FOR LOGIN WITH EMAIL
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=250)
 
@@ -54,6 +56,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ("id", "email", "user_name")
 
 
+# SERAILIZER FOR CHANGE PASSWORD
 class ChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(
         max_length=250, style={"input_type": "password"}, write_only=True
@@ -81,6 +84,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
 
 
+# SERIALIZER FOR SEND PASSWORD RESET EMAIL
 class SendPasswordResetEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=250)
 
@@ -107,6 +111,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
             raise serializers.ValidationError("You are not a registered user.")
 
 
+# SERIALIZER FOR PASSWORD RESET
 class PasswordResetSerializer(serializers.Serializer):
     password = serializers.CharField(
         max_length=250, style={"input_type": "password"}, write_only=True
@@ -126,7 +131,7 @@ class PasswordResetSerializer(serializers.Serializer):
             entered_otp = attrs.get("entered_otp")
             uid = self.context.get("user_id")
             token = self.context.get("otp")
-            if entered_otp!=token:
+            if entered_otp != token:
                 raise serializers.ValidationError("otp is not correct")
             if password != password2:
                 raise serializers.ValidationError(
@@ -139,3 +144,12 @@ class PasswordResetSerializer(serializers.Serializer):
             return attrs
         except DjangoUnicodeDecodeError as identifier:
             raise ValidationErr("Token is invalid or expired")
+
+
+# SERIALIZER FOR LOGIN USER WITH USERNAME
+class LoginWithUserNameSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(max_length=200)
+
+    class Meta:
+        model = User
+        fields = ["user_name", "password"]
