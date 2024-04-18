@@ -6,6 +6,7 @@ from .views import (
     ChangePasswordView,
     SendPasswordResetEmailView,
     PasswordResetView,
+    LoginWithUserNameView,
 )
 
 urlpatterns = [
@@ -19,6 +20,9 @@ urlpatterns = [
         name="change_password",
     ),
     path(
-        'resetpassword/<pk>/<otp>/', PasswordResetView.as_view(), name="reset-password"
+        "resetpassword/<pk>/<otp>/", PasswordResetView.as_view(), name="reset-password"
+    ),
+    path(
+        "login-with-username/", LoginWithUserNameView.as_view(), name="reset-password"
     ),
 ]

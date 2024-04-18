@@ -23,6 +23,7 @@ class MyUserManager(BaseUserManager):
             raise
 
     def create_user(self, email, password=None, password2=None, **extra_fields):
+
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         extra_fields.setdefault("is_active", True)
@@ -43,7 +44,7 @@ class User(AbstractBaseUser):
         max_length=250,
         unique=True
     )
-    user_name = models.CharField(max_length=200)
+    user_name = models.CharField(max_length=200, unique=True)
     password = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -52,7 +53,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     is_blocked = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    role = models.CharField(max_length=300, null=True)
+    role = models.CharField(max_length=300, default='user')
 
     objects = MyUserManager()
 

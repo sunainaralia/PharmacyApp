@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView  # type: ignore
+import json
 from .serializers import (
     RegistrationSerializer,
     LoginSerializer,
@@ -8,6 +9,7 @@ from .serializers import (
     ChangePasswordSerializer,
     SendPasswordResetEmailSerializer,
     PasswordResetSerializer,
+    LoginWithUserNameSerializer,
 )
 from v1.renderers import ErrorRenderer
 from django.contrib.auth import authenticate
@@ -45,7 +47,7 @@ class RegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# USER LOGIN VIEW
+# USER LOGIN with email
 class LoginView(APIView):
     renderer_classes = [ErrorRenderer]
 
@@ -161,3 +163,49 @@ class PasswordResetView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# login user with username
+class LoginWithUserNameView(APIView):
+    renderer_classes = [ErrorRenderer]
+
+    def post(self, request):
+        serializer = LoginWithUserNameSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            username = serializer.data.get("user_name")
+            password = serializer.data.get("password")
+            user_data = User.objects.get(user_name=username)
+            print(user_data)
+            email = user_data.email
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                if not user.is_blocked:
+                    token = get_token_for_user(user)
+                    user_detail = {
+                        "user_name": user.user_name,
+                        "email": user.email,
+                        "id": user.id,
+                        "role": user.role,
+                    }
+                    return Response(
+                        {
+                            "msg": "login user successfully",
+                            "token": token,
+                            "Data": user_detail,
+                        }
+                    )
+                else:
+                    return Response(
+                        {"errors": {"non_field_errors": ["you are blocked"]}},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+
+            else:
+                return Response(
+                    {
+                        "errors": {
+                            "non_field_errors": ["username or password is not correct"]
+                        }
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )

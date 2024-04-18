@@ -4,13 +4,16 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class UserModelAdmin(BaseUserAdmin):
-    list_display = ['id', 'email', 'user_name', 'is_admin']
-    list_filter = ['is_admin',]
+
+    list_display = ("id", "email", "user_name", "is_admin")
+    list_filter = ("is_admin",)
     fieldsets = [
-        ['User Credentials', {'fields': ['email', 'password']}],
-        ['Personal Info', {'fields': ['user_name', 'is_blocked']}],
-        ['Permisions', {'fields': ['is_admin',
-                                   'is_staff', 'is_superuser', 'is_active']}],
+        ("User Credentials", {"fields": ["email", "password"]}),
+        ("Personal Info", {"fields": ["user_name", "is_blocked"]}),
+        (
+            "Permissions",
+            {"fields": ("is_admin", "is_staff", "is_superuser", "is_active")},
+        ),
     ]
     add_fieldsets = (
         (None, {
