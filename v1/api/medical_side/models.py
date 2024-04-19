@@ -10,7 +10,7 @@ class MedicineModel(models.Model):
     quantity = models.IntegerField()
     discount = models.CharField(max_length=25)
     gst = models.CharField(max_length=25)
-    mrp = models.CharField(max_length=100)
+    mrp = models.IntegerField()
     rate = models.IntegerField()
     medicine_details = models.TextField()
 
@@ -87,7 +87,7 @@ ORDER_STATUS = {
 class OrderItem(models.Model):
     addresses = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
     medicine = models.ForeignKey(MedicineModel, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=1)
 
     def subtotal(self):
         return self.quantity * self.medicine.rate
