@@ -169,7 +169,7 @@ class PasswordResetView(APIView):
 class LoginWithUserNameView(APIView):
     renderer_classes = [ErrorRenderer]
 
-    def post(self, request):
+    def post(self, request,format=None):
         serializer = LoginWithUserNameSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             username = serializer.data.get("user_name")
@@ -209,3 +209,11 @@ class LoginWithUserNameView(APIView):
                     },
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+# ADD DOCTOR VIEW
+# class PostDoctorView(APIView):
+#     def post(self,request,format=None):
+
+
+
+
