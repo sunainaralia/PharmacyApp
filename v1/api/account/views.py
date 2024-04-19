@@ -210,9 +210,7 @@ class LoginWithUserNameView(APIView):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-# ADD DOCTOR VIEW
-# class PostDoctorView(APIView):
-#     def post(self,request,format=None):
+
 
 
 

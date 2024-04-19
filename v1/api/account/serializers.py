@@ -3,7 +3,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from xml.dom import ValidationErr
-from .models import User,Doctor
+from .models import User
 from rest_framework import serializers
 import random
 
@@ -153,8 +153,4 @@ class LoginWithUserNameSerializer(serializers.ModelSerializer):
         model = User
         fields = ["user_name", "password"]
 
-# SERIALIZER FOR ADD DOCTOR
-class DoctorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Doctor
-        fields = "__all__"
+
