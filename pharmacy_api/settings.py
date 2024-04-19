@@ -34,8 +34,13 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "v1.api.account",
+<<<<<<< HEAD
     "v1.api.medical_side",
 
+=======
+    "v1.api.doctor",
+    "v1.api.rating",
+>>>>>>> origin/main
 ]
 
 MIDDLEWARE = [
@@ -116,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/kolkata"
 
 USE_I18N = True
 

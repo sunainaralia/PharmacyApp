@@ -3,7 +3,6 @@ from django.utils.encoding import DjangoUnicodeDecodeError
 from xml.dom import ValidationErr
 from .models import User
 from rest_framework import serializers
-import os
 import random
 
 
@@ -152,3 +151,5 @@ class LoginWithUserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["user_name", "password"]
+
+

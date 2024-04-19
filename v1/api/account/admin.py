@@ -9,7 +9,7 @@ class UserModelAdmin(BaseUserAdmin):
     list_filter = ("is_admin",)
     fieldsets = [
         ("User Credentials", {"fields": ["email", "password"]}),
-        ("Personal Info", {"fields": ["user_name", "is_blocked"]}),
+        ("Personal Info", {"fields": ["user_name", "is_blocked",'role']}),
         (
             "Permissions",
             {"fields": ("is_admin", "is_staff", "is_superuser", "is_active")},
@@ -27,3 +27,5 @@ class UserModelAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserModelAdmin)
+
+
