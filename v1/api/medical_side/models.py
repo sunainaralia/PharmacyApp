@@ -59,8 +59,6 @@ ADDRESS_TYPE = {
     'Home': 'Home',
     'Office': 'Office',
 }
-
-
 class AddressModel(models.Model):
     name = models.CharField(max_length=250)
     email = models.EmailField()
