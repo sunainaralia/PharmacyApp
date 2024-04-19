@@ -1,7 +1,7 @@
 from .utils import Util
 from django.utils.encoding import DjangoUnicodeDecodeError
 from xml.dom import ValidationErr
-from .models import User,Doctor
+from .models import User, Doctor
 from rest_framework import serializers
 import random
 
@@ -153,6 +153,8 @@ class LoginWithUserNameSerializer(serializers.ModelSerializer):
         fields = ["user_name", "password"]
 
 # SERIALIZER FOR ADD DOCTOR
+
+
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor

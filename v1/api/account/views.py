@@ -169,13 +169,12 @@ class PasswordResetView(APIView):
 class LoginWithUserNameView(APIView):
     renderer_classes = [ErrorRenderer]
 
-    def post(self, request,format=None):
+    def post(self, request, format=None):
         serializer = LoginWithUserNameSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             username = serializer.data.get("user_name")
             password = serializer.data.get("password")
             user_data = User.objects.get(user_name=username)
-            print(user_data)
             email = user_data.email
             user = authenticate(request, email=email, password=password)
             if user is not None:
@@ -213,7 +212,3 @@ class LoginWithUserNameView(APIView):
 # ADD DOCTOR VIEW
 # class PostDoctorView(APIView):
 #     def post(self,request,format=None):
-
-
-
-

@@ -1,4 +1,4 @@
-from .models import User,Doctor
+from .models import User, Doctor
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
@@ -30,5 +30,7 @@ admin.site.register(User, UserModelAdmin)
 
 
 class DoctorAdmin(admin.ModelAdmin):
-    list_display=[field.name for field in Doctor._meta.fields]
-admin.site.register(Doctor,DoctorAdmin)
+    list_display = [field.name for field in Doctor._meta.fields]
+
+
+admin.site.register(Doctor, DoctorAdmin)
