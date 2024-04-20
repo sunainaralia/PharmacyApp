@@ -55,6 +55,8 @@ class ChatConsumer(WebsocketConsumer):
                     'username': sender.username,
                 }
             )
+        else:
+            print("Error this user in not authenticated")
 
     # Receive message from room group
     def chat_message(self, event):

@@ -1,4 +1,19 @@
 from django.db import models
+from account.models import User
+
+
+class PharmacyModel(models.Model):
+    primary_id = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="medical_shop", primary_key=True
+    )
+    name = models.CharField(max_length=250)
+    number = models.CharField(max_length=20)
+    gender = models.CharField(max_length=20)
+    address = models.CharField(max_length=250)
+    city = models.CharField(max_length=20)
+    state = models.CharField(max_length=50)
+    medical_name = models.CharField(max_length=200)
+    licence_number = models.CharField(max_length=200)
 
 
 class MedicineModel(models.Model):
@@ -59,6 +74,8 @@ ADDRESS_TYPE = {
     'Home': 'Home',
     'Office': 'Office',
 }
+
+
 class AddressModel(models.Model):
     name = models.CharField(max_length=250)
     email = models.EmailField()
