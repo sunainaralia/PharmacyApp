@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "v1.api.account",
     "v1.api.doctor",
     "v1.api.rating",
+    "v1.api.medical_side",
     "v1.api.user_chat",
 ]
 

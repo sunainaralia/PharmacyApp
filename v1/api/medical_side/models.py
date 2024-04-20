@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import User
+from v1.api.account.models import User
 
 
 class PharmacyModel(models.Model):
