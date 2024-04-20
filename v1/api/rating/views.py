@@ -18,5 +18,3 @@ class RatingView(APIView):
                 {"msg": "rating is saved successfully", "data": serializer.data},
                 status=status.HTTP_201_CREATED,
             )
-        
-        

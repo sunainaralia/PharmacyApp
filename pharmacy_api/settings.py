@@ -33,14 +33,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
+    "channels",
     "v1.api.account",
-<<<<<<< HEAD
-    "v1.api.medical_side",
-
-=======
     "v1.api.doctor",
     "v1.api.rating",
->>>>>>> 6d5a13b523f03a705f17efdf0de206f23f738421
+    "v1.api.user_chat",
 ]
 
 MIDDLEWARE = [

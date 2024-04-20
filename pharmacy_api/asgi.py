@@ -1,16 +1,29 @@
-"""
-ASGI config for pharmacy_api project.
+# import os
+# from django.core.asgi import get_asgi_application
+# from channels.routing import ProtocolTypeRouter, URLRouter
+# from v1.api.user_chat.urls import urlpatterns
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pharmacy_api.settings')
 
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
-"""
+# application = ProtocolTypeRouter(
+#     {
+#         "http": get_asgi_application(),
+#         "websocket": URLRouter(urlpatterns),
+#     }
+# )
 
-import os
+# In your Django project's routing.py or asgi.py
 
-from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from django.urls import path, include
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pharmacy_api.settings')
+from v1.api.user_chat.consumers import ChatConsumer
 
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            path('', ChatConsumer.as_asgi()),
+        ])
+    ),
+})
