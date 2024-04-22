@@ -8,6 +8,8 @@ class Rating(models.Model):
   star=models.IntegerField()
   comment=models.TextField()
   rater_experience=models.TextField()
+  created_at=models.DateTimeField(auto_now_add=True,null=True)
+  updated_at=models.DateTimeField(auto_now=True,null=True)
 
 
 

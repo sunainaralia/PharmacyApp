@@ -2,8 +2,11 @@ from .serializers import (
     DoctorSerializer,
     DoctorExperienceSerializer,
     GetAllDoctorSerializer,
+    AppointmentSerializer,
+    PrescriptionSerializer,
+    PrescriptionTabletSerializer,
 )
-from .models import Doctor, DoctorExperience
+from .models import Doctor, DoctorExperience, Appointment
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -12,15 +15,21 @@ from datetime import datetime
 from v1.api.account.models import User
 from v1.api.rating.models import Rating
 from v1.api.rating.serializers import RatingSerializer
+from django.utils import timezone
+from django.db.models import Q
+from v1.api.patient.models import Patient
+
+
 # ADD DOCTOR VIEW
 class PostDoctorView(APIView):
     renderer_classes = [ErrorRenderer]
+
     def post(self, request, format=None):
         serializer = DoctorSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             user = User.objects.get(pk=serializer.data["primary_id"])
-            user.role='doctor'
+            user.role = "doctor"
             user.save()
             return Response(
                 {
@@ -52,7 +61,12 @@ class PostDoctorExperienceView(APIView):
 class EditDoctorView(APIView):
     renderer_classes = [ErrorRenderer]
 
-    def get(self, request,pk=None, format=None, ):
+    def get(
+        self,
+        request,
+        pk=None,
+        format=None,
+    ):
         if pk is None:
             try:
                 doctors = Doctor.objects.all()
@@ -72,7 +86,9 @@ class EditDoctorView(APIView):
                 serializer = DoctorSerializer(doctor)
                 # Calculate age from date of birth
                 experience = DoctorExperience.objects.filter(primary_id=pk)
-                experience_serializer=DoctorExperienceSerializer(experience,many=True)
+                experience_serializer = DoctorExperienceSerializer(
+                    experience, many=True
+                )
                 total_years = 0
                 total_months = 0
                 for exp in experience_serializer.data:
@@ -93,16 +109,17 @@ class EditDoctorView(APIView):
                     - ((current_date.month, current_date.day) < (dob.month, dob.day))
                 )
                 rating = Rating.objects.filter(ratee_id=pk)
-                review=rating.count()
-                rating_serializer=RatingSerializer(rating,many=True)
+                review = rating.count()
+                rating_serializer = RatingSerializer(rating, many=True)
                 total_stars = 0
                 for star in rating_serializer.data:
-                    total_stars+=star['star']
-                serialized_data = serializer.data 
-                serialized_data["age"] = age 
-                serialized_data['experience']=total_experience
+                    total_stars += star["star"]
+                serialized_data = serializer.data
+                serialized_data["age"] = age
+                if (serialized_data["experience"]) == None:
+                    serialized_data["experience"] = total_experience
                 serialized_data["review"] = review
-                serialized_data['total_star']=total_stars/review
+                serialized_data["total_star"] = total_stars / review
 
                 return Response(
                     {"msg": "data of single user is get", "data": serialized_data},
@@ -145,3 +162,66 @@ class EditDoctorView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
+
+
+# post appointment
+class AppointmentView(APIView):
+    renderer_classes = [ErrorRenderer]
+
+    def post(self, request, format=None):
+        serializer = AppointmentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"msg": "appointment is saved successfully", "Data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
+
+
+# get doctor with pending appointments with all appointments(home screen)
+# class GetDoctorWithAppointment(APIView):
+#     renderer_classes = [ErrorRenderer]
+
+#     def get(self, request, pk=None, format=None):
+#         doctor = Doctor.objects.get(pk=pk)
+#         pending_appointment = Appointment.objects.filter(
+#             doctor_id=pk, appointment_status="pending"
+#         )
+#         resolved_appointment = Appointment.objects.filter(doctor_id=pk).exclude(
+#             appointment_status="pending"
+#         )
+#         resolved_appointment_serializer = AppointmentSerializer(
+#             resolved_appointment, many=True
+#         )
+#         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+#         recent_appointments = Appointment.objects.filter(
+#             doctor_id=pk, created_at__gte=thirty_days_ago
+#         ).count()
+#         today = timezone.now().date()
+#         today_appointments = Appointment.objects.filter(
+#             doctor_id=pk, created_at__date=today
+#         ).count()
+#         doctor_serializer = DoctorSerializer(doctor)
+#         pending_appointment_serializer = AppointmentSerializer(
+#             pending_appointment, many=True
+#         )
+#         pendingAppointments = pending_appointment_serializer.data
+#         resolvedAppointments=resolved_appointment_serializer.data
+#         for user in pendingAppointments:
+#             user_instance = Patient.objects.get(pk=user["patient_id"])
+#             user["patient_unique_id"] = user_instance.patient_id
+#             user["fullName"] = user_instance.full_name
+#         for user in resolvedAppointments:
+#             user_instance = Patient.objects.get(pk=user["patient_id"])
+#             user["patient_unique_id"] = user_instance.patient_id
+#             user["fullName"] = user_instance.full_name
+#         return Response(
+#             {
+#                 "msg": "get all details of doctor and related appointments",
+#                 "doctor_details": doctor_serializer.data,
+#                 "recent_appointments": recent_appointments,
+#                 "today_appointments": today_appointments,
+#                 "pending_appointments": pendingAppointments,
+#                 'resolved_appointments':resolvedAppointments
+#             }
+#         )
