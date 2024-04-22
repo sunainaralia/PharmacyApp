@@ -95,7 +95,7 @@ ORDER_STATUS = {
     'Shipped': 'Shipped',
     'OutofDelivered': 'Out of Delivered',
     'Delivered': 'Delivered',
-    'Cancelle': 'Cancelled'
+    'Cancelled': 'Cancelled',
 }
 
 
