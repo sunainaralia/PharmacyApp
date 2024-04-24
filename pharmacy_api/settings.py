@@ -84,6 +84,9 @@ REST_FRAMEWORK = {
 WSGI_APPLICATION = "pharmacy_api.wsgi.application"
 
 
+ASGI_APPLICATION = "pharmacy_api.asgi.application"
+
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
