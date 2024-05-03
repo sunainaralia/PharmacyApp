@@ -1,13 +1,17 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .models import Message
-from .serializers import MessageSerializer
+from rest_framework.response import Response
+from .models import Chat, Group
+from .serializers import ChatSerializer, GroupSerializer
 
-
-class MessageListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    # permission_classes = [IsAuthenticated]
+class ChatListCreateView(generics.ListCreateAPIView):
+    queryset = Chat.objects.all()
+    serializer_class = ChatSerializer
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        group_name = self.kwargs.get('group_name')
+        group, _ = Group.objects.get_or_create(name=group_name)
+        serializer.save(group=group)
+
+class GroupListCreateView(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer

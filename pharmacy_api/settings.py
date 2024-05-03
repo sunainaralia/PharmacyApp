@@ -81,8 +81,6 @@ REST_FRAMEWORK = {
     )
 }
 
-WSGI_APPLICATION = "pharmacy_api.wsgi.application"
-
 
 ASGI_APPLICATION = "pharmacy_api.asgi.application"
 
@@ -200,3 +198,12 @@ CORS_ALLOWED_ORIGINS = [
 
 # Maximum age (in seconds) of a preflight request
 CORS_PREFLIGHT_MAX_AGE = 86400  # 24 hours
+
+CHANNEL_LAYERS = {
+     'default': {
+          'BACKEND': 'channels_redis.core.RedisChannelLayer',
+          'CONFIG': {
+              "hosts": [('127.0.0.1', 6379)],
+          },
+     }
+}

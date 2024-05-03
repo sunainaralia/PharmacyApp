@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from .models import Message
+from .models import Chat, Group
 
-
-class MessageSerializer(serializers.ModelSerializer):
+class ChatSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Message
-        fields = ['id', 'sender', 'receiver', 'content', 'timestamp']
+        model = Chat
+        fields = '__all__'
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'

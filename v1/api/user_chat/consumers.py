@@ -1,74 +1,57 @@
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.exceptions import StopConsumer
 import json
-from django.contrib.auth import get_user_model
-from .models import Message
-import jwt
+from channels.db import database_sync_to_async
+from .models import Chat, Group
 
-User = get_user_model()
-
-class ChatConsumer(WebsocketConsumer):
-    def connect(self):
-        auth_header = [header[1] for header in self.scope['headers'] if header[0] == b'authrization']
-        if auth_header:
-            token = auth_header[0].decode('utf-8').split()[1]
-            print("\n#################################\n",token,"\n#################################\n")
-             # Decode the JWT token
-            decoded_token = jwt.decode(token)
-            print("\n#################################\n",decoded_token,"\n#################################\n")
-            if self.data.is_authenticated:
-                self.room_name = 'chat_room'
-                self.room_group_name = f'chat_{self.room_name}'
-
-                # Join room group
-                async_to_sync(self.channel_layer.group_add)(
-                    self.room_group_name,
-                    self.channel_name
-                )
-
-                self.accept()
-        else:
-            self.close()
-
-    def disconnect(self, close_code):
-        if hasattr(self, 'room_group_name'):
-            # Leave room group
-            async_to_sync(self.channel_layer.group_discard)(
-                self.room_group_name,
-                self.channel_name
+class ChatConsumer(AsyncWebsocketConsumer):
+     async def websocket_connect(self,event):
+          print("websocket_connect",event)
+          self.group_name = self.scope['url_route']['kwargs']['group_name']
+          group = await database_sync_to_async(Group.objects.get)(name=self.group_name)
+          if not group:
+            await database_sync_to_async(Group.objects.create)(
+                name=self.group_name
             )
+     
+          await self.channel_layer.group_add(
+               self.group_name ,   # Group Name
+               self.channel_name
+               )
+          await self.send({
+               "type":"websocket.accept",
+          })
 
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message_content = text_data_json['message']
-
-        # Save message to the database
-        if self.user.is_authenticated:
-            sender = self.user
-            receiver_username = text_data_json.get('receiver_username')
-            receiver = User.objects.get(username=receiver_username)
-            message = Message.objects.create(
-                sender=sender, receiver=receiver, content=message_content)
-
-            # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'message': message_content,
-                    'username': sender.username,
-                }
-            )
-        else:
-            print("Error: This user is not authenticated")
-
-    # Receive message from room group
-    def chat_message(self, event):
-        message = event['message']
-        username = event['username']
-
-        # Send message to WebSocket
-        self.send(text_data=json.dumps({
-            'message': message,
-            'username': username
-        }))
+     async def websocket_receive(self,event):
+          print("websocket_receive",event['text'])
+          data = json.loads(event['text'])
+          # find group name
+          group = await database_sync_to_async(Group.objects.get)(name=self.group_name)
+          # Save new Chat
+          chat = Chat(
+               group=group,
+               content=data['msg']
+               )
+          await database_sync_to_async(chat.save)()
+          
+          await self.channel_layer.group_send(
+               self.group_name , # Group Name
+               {
+               'type':"chat.message",
+               'message':event['text']
+               },
+          )
+     
+     async def chat_message(self,event):
+          await self.send({
+               "type":"websocket.send",
+               "text":event['message']
+          })
+    
+     async def websocket_disconnect(self,event):
+          print("websocket_disconnect",event)
+          await self.channel_layer.group_discard(
+               self.group_name ,   # Group Name
+               self.channel_name
+               )
+          raise StopConsumer()
